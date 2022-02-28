@@ -10,6 +10,9 @@ class Todo(models.Model):
     done=models.BooleanField(default=False);
     date_done=models.DateTimeField(null=True, blank=True);
     
+    class Meta:
+        ordering=['-done','deadline', '-date_created']
+    
     def __str__(self):
         return self.title;
     
@@ -18,6 +21,10 @@ class Diary(models.Model):
     title=models.CharField(max_length=200);
     description=models.TextField(null=True, blank=True);
     date=models.DateField(auto_now_add=True);
+    date_created=models.DateTimeField(auto_now=True);
+    
+    class Meta:
+        ordering=['-date','-date_created']
     
     def __str__(self):
         return self.title;
@@ -27,13 +34,17 @@ class Meeting(models.Model):
     title=models.CharField(max_length=200);
     description=models.TextField(null=True, blank=True);
     venue=models.CharField(max_length=200);
-    start_time=models.DateTimeField(null=True, blank=True);
-    end_time=models.DateTimeField(null=True, blank=True);
+    date=models.DateField(null=True, blank=True);
+    start_time=models.TimeField(null=True, blank=True);
+    end_time=models.TimeField(null=True, blank=True);
     agenda=models.TextField(null=True, blank=True);
     called_by=models.CharField(max_length=200);
     available=models.BooleanField(default=False);
     requirements=models.TextField(null=True, blank=True);
     my_contribution=models.TextField(null=True, blank=True);
+    
+    class Meta:
+        ordering=['date','start_time']
     
     def __str__(self):
         return self.title;
@@ -46,6 +57,9 @@ class Event(models.Model):
     date=models.DateTimeField(null=True, blank=True);
     available=models.BooleanField(default=True);
     
+    class Meta:
+        ordering=['date']
+    
     def __str__(self):
         return self.title;
     
@@ -54,6 +68,9 @@ class Plan(models.Model):
     title=models.CharField(max_length=200);
     description=models.TextField(null=True, blank=True);
     deadline=models.DateTimeField(null=True, blank=True);
+    
+    class Meta:
+        ordering=['deadline']
     
     def __str__(self):
         return self.title;
@@ -71,6 +88,9 @@ class Project(models.Model):
     closed=models.BooleanField(default=False);
     open=models.BooleanField(default=False);
     
+    class Meta:
+        ordering=['open','deadline','updated']
+    
     def __str__(self):
         return self.title; 
     
@@ -80,6 +100,9 @@ class Quote(models.Model):
     quote=models.TextField();
     date=models.DateTimeField(auto_now_add=True);
     
+    class Meta:
+        ordering=['-date', 'source']
+    
     def __str__(self):
         return self.quote;
 
@@ -88,6 +111,9 @@ class Budget(models.Model):
     category=models.CharField(max_length=200);
     item=models.CharField(max_length=200);
     amount=models.IntegerField(null=True, blank=True);
+    
+    class Meta:
+        ordering=['amount']
     
     def __str__(self):
         return self.item
