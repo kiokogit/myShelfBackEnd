@@ -1,4 +1,5 @@
-from .constants import models_forms_serializers;
+from datetime import date
+from .constants import models_forms_serializers, types as all_types;
 
 # find model, form and serializer using the type
 def find_model_form_ser(type):
@@ -6,7 +7,6 @@ def find_model_form_ser(type):
         if key==type:
             return models_forms_serializers[key]
     return None
-
 
 def budgetLogic():
     model=find_model_form_ser('budget')[0]
@@ -53,17 +53,26 @@ def new_or_edit_entry(type, data, id):
     
 # fetch data from database model
 # accepts type as a list of many types
-def fetch_data(types):
+def fetch_data(type):
     # initialize data as an empty dict
     data={};
-    
-    for type in types:
-        propList = find_model_form_ser(type);
-        model, serializer = propList[0], propList[2];
-        # for each type, get data and serilaize, then add to the dictionary
-        data_raw = model.objects.all();
-        final_data = serializer(data_raw, many=True).data;
-        data.__setitem__(type,final_data);
+    propList = find_model_form_ser(type);
+    model, serializer = propList[0], propList[2];
+    # for each type, get data and serilaize, then add to the dictionary
+    data_raw = model.objects.all();
+    final_data = serializer(data_raw, many=True).data;
+    data.__setitem__(type,final_data);
         
-    return data
+    return data; 
+   
+# urgent meetings, data, etc
+def urgents(types):
+    data = {};
+    # meetings
+    meetings = find_model_form_ser('meeting')[0].objects.all();
     
+    for meeting in meetings:
+        if meeting.start_time < date.today():
+            data.__setitem__(meeting.index, meeting);
+    
+    return 

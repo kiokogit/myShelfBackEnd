@@ -2,13 +2,13 @@ from rest_framework.response import Response;
 from rest_framework.decorators import api_view;
 
 from .controllers import delete_entry, fetch_data, new_or_edit_entry;
-from .constants import types;
+# from .constants import types;
 
 # Create your views here.
-#GET AL lists
+#GET ALL lists
 @api_view(['GET'])
-def getEntries(request):
-    data = fetch_data(types)
+def getEntries(request, type):
+    data = fetch_data(type)
     return Response(data=data);
 
 #create a journal entry, loop through the 'type' param in the url
