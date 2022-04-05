@@ -1,15 +1,17 @@
 from rest_framework.response import Response;
 from rest_framework.decorators import api_view;
 
-from .controllers import delete_entry, fetch_data, new_or_edit_entry;
+from .controllers import delete_entry, fetch_data, new_or_edit_entry, urgents;
 # from .constants import types;
 
 # Create your views here.
 #GET ALL lists
 @api_view(['GET'])
 def getEntries(request, type):
-    data = fetch_data(type)
-    return Response(data=data);
+    dict = {}
+    data = fetch_data(type, serialized=True, many=True)
+    dict.__setitem__(type,data)
+    return Response(data=dict);
 
 #create a journal entry, loop through the 'type' param in the url
 @api_view(['POST'])
@@ -43,3 +45,7 @@ def delEntry(request, type, id):
         return Response(status=200);
     else:
         return Response(status=404)
+
+@api_view(['GET'])
+def getUrgent(request):
+    return Response(data=urgents())

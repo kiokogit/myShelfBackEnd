@@ -1,6 +1,7 @@
+from datetime import date
 from django.db import models
 
-# Create your models here.
+# Create your models here
 # ToDo
 class Todo(models.Model):
     title=models.CharField(max_length=200);
@@ -9,6 +10,15 @@ class Todo(models.Model):
     deadline=models.DateTimeField(null=True, blank=True);
     done=models.BooleanField(default=False);
     date_done=models.DateTimeField(null=True, blank=True);
+    
+    @property
+    def has_passed(self):
+        """This property returns True if the date of the meeting is before today
+        Returns:
+            _type_: _Boolean_
+        """
+        if self.done:
+            return True
     
     class Meta:
         ordering=['-done','deadline', '-date_created']
@@ -43,8 +53,18 @@ class Meeting(models.Model):
     requirements=models.TextField(null=True, blank=True);
     my_contribution=models.TextField(null=True, blank=True);
     
+    # property to define past meetings
+    @property
+    def has_passed(self):
+        """This property returns True if the date of the meeting is before today
+        Returns:
+            _type_: _Boolean_
+        """
+        if self.date < date.today():
+            return True
+    
     class Meta:
-        ordering=['date','start_time']
+        ordering=['-date','start_time']
     
     def __str__(self):
         return self.title;
@@ -57,12 +77,17 @@ class Event(models.Model):
     date=models.DateTimeField(null=True, blank=True);
     available=models.BooleanField(default=True);
     
+    @property
+    def has_passed(self):
+        if self.date:
+            return True;
+    
     class Meta:
-        ordering=['date']
+        ordering=['-date']
     
     def __str__(self):
         return self.title;
-    
+   
 # Plans
 class Plan(models.Model):
     title=models.CharField(max_length=200);
@@ -88,12 +113,21 @@ class Project(models.Model):
     closed=models.BooleanField(default=False);
     open=models.BooleanField(default=False);
     
+    @property
+    def has_passed(self):
+        """This property returns True if a project is closed
+        Returns:
+            _type_: _Boolean_
+        """
+        if self.closed:
+            return True
+    
     class Meta:
         ordering=['open','deadline','updated']
     
     def __str__(self):
         return self.title; 
-    
+   
 # Quotes
 class Quote(models.Model):
     source=models.CharField(max_length=200, default='Anonymous');
